@@ -6,5 +6,6 @@ def main():
     vacancies = hh_api.api_connect("python")
     print(vacancies)
 
+
 if __name__ == "__main__":
     main()
