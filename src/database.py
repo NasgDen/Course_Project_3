@@ -38,6 +38,27 @@ class DataBase(BaseDatabase):
         conn.commit()
         conn.close()
 
-    def create_table(self, *args, **kwargs):
+    @staticmethod
+    def create_table(database_name: str, params: dict):
         """Метод создания таблиц в базе данных"""
-        pass
+        conn = psycopg2.connect(dbname=database_name, **params)
+        conn.autocommit = True
+        with conn.cursor() as cur:
+            cur.execute(f"""
+                CREATE TABLE company(
+                    company_id SERIAL PRIMARY KEY,
+                    name VARCHAR(250),
+                    address VARCHAR(250)
+                )
+            """)
+            cur.execute(f"""
+                CREATE TABLE vacancies (
+                    vacancy_id SERIAL PRIMARY KEY,
+                    name VARCHAR(250),
+                    salary_from INTEGER,
+                    salary_to INTEGER,
+                    company_id INTEGER REFERENCES company (company_id)
+                )
+            """)
+        conn.commit()
+        conn.close()

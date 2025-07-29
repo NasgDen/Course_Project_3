@@ -15,7 +15,7 @@ class HeadHunterAPI(BaseApiClass):
 
     def api_connect(self, name):
         """Метод подключения к api.hh.ru"""
-        self.__params = {"text": name, "period": 60, "per_page": 100}
+        self.__params = {"text": name, "period": 1, "per_page": 10}
         response = requests.get(self.__url, self.__params)
         if response.status_code == 200:
             return response.json()

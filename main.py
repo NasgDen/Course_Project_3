@@ -8,7 +8,8 @@ def main():
     # print(vacancies)
     database = DataBase()
     param_database = database.config_parser()
-    database.create_database("HeadHunter", param_database)
+    database.create_database("headhunter", param_database)
+    database.create_table("headhunter", param_database)
 
 
 if __name__ == "__main__":
