@@ -81,4 +81,4 @@ class HeadHunterAPI(BaseApiClass):
                         vacancy_dict["requirement"] = None
                         vacancy_dict["responsibility"] = None
                     vacancies.append(vacancy_dict)
-            return vacancies
+        return vacancies

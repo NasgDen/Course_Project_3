@@ -62,7 +62,13 @@ class DataBase(BaseDatabase):
                     name VARCHAR(250),
                     salary_from INTEGER,
                     salary_to INTEGER,
-                    company_id INTEGER REFERENCES company (company_id)
+                    city VARCHAR(250),
+                    street VARCHAR(250),
+                    building VARCHAR(250),
+                    url VARCHAR(250),
+                    company_id INTEGER REFERENCES company (company_id),
+                    requirement TEXT,
+                    responsibility TEXT
                 )
             """
             )
@@ -79,6 +85,46 @@ class DataBase(BaseDatabase):
                 cur.execute(
                     "INSERT INTO company(company_id, name, url, vacancies_url) VALUES (%s, %s, %s, %s)",
                     (company["id"], company["name"], company["alternate_url"], company["vacancies_url"]),
+                )
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def insert_vacancies(database_name: str, params: dict, vacancies: list) -> None:
+        """Метод заполняет таблице vacancy значениями полученными из api.hh.ru"""
+        conn = psycopg2.connect(dbname=database_name, **params)
+        conn.autocommit = True
+        for vacancy in vacancies:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """INSERT INTO vacancies
+                    (
+                    vacancy_id,
+                    name,
+                    salary_from,
+                    salary_to,
+                    city,
+                    street,
+                    building,
+                    url,
+                    company_id,
+                    requirement,
+                    responsibility
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                    (
+                        vacancy["vacancy_id"],
+                        vacancy["name"],
+                        vacancy["salary_from"],
+                        vacancy["salary_to"],
+                        vacancy["city"],
+                        vacancy["street"],
+                        vacancy["building"],
+                        vacancy["url"],
+                        vacancy["company_id"],
+                        vacancy["requirement"],
+                        vacancy["responsibility"],
+                    ),
                 )
         conn.commit()
         conn.close()
