@@ -29,7 +29,7 @@ class DataBase(BaseDatabase):
         """Метод подключение к базе данных"""
         pass
 
-    def create_database(self, database_name: str, params: dict):
+    def create_database(self, database_name: str, params: dict) -> None:
         """Метод создания базы данных"""
         conn = psycopg2.connect(dbname="postgres", **params)
         conn.autocommit = True
@@ -40,7 +40,7 @@ class DataBase(BaseDatabase):
         conn.close()
 
     @staticmethod
-    def create_table(database_name: str, params: dict):
+    def create_table(database_name: str, params: dict) -> None:
         """Метод создания таблиц в базе данных"""
         conn = psycopg2.connect(dbname=database_name, **params)
         conn.autocommit = True
@@ -48,16 +48,17 @@ class DataBase(BaseDatabase):
             cur.execute(
                 """
                 CREATE TABLE company(
-                    company_id SERIAL PRIMARY KEY,
+                    company_id INTEGER PRIMARY KEY,
                     name VARCHAR(250),
-                    address VARCHAR(250)
+                    url VARCHAR(250),
+                    vacancies_url VARCHAR(250)
                 )
             """
             )
             cur.execute(
                 """
                 CREATE TABLE vacancies (
-                    vacancy_id SERIAL PRIMARY KEY,
+                    vacancy_id INTEGER PRIMARY KEY,
                     name VARCHAR(250),
                     salary_from INTEGER,
                     salary_to INTEGER,
@@ -67,3 +68,21 @@ class DataBase(BaseDatabase):
             )
         conn.commit()
         conn.close()
+
+    @staticmethod
+    def insert_companies(database_name: str, params: dict, companies: list) -> None:
+        """ Метод заполняет таблице company значениями полученными из api.hh.ru """
+        conn = psycopg2.connect(dbname=database_name, **params)
+        conn.autocommit = True
+        for company in companies:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """INSERT INTO company(company_id, name, url, vacancies_url) VALUES (%s, %s, %s, %s)""",
+                    (company["id"], company["name"], company["alternate_url"], company["vacancies_url"])
+                )
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def get_company_id(database_name: str, params: dict):
+        pass
