@@ -3,7 +3,9 @@ from src.database import DataBase
 
 
 def main():
-    # hh_api = HeadHunterAPI()
+    hh_api = HeadHunterAPI()
+    company = hh_api.get_company_api(["СБЕР", "2ГИС"])
+    print(company)
     # vacancies = hh_api.api_connect("python")
     # print(vacancies)
     database = DataBase()
