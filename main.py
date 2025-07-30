@@ -1,5 +1,5 @@
-from src.head_hunter_api import HeadHunterAPI
 from src.database import DataBase
+from src.head_hunter_api import HeadHunterAPI
 
 
 def main():

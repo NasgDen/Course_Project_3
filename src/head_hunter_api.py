@@ -1,5 +1,4 @@
 import requests
-import json
 
 from src.base_api import BaseApiClass
 
@@ -23,17 +22,12 @@ class HeadHunterAPI(BaseApiClass):
         else:
             return {}
 
-
     def get_company_api(self, list_company: list) -> list[dict]:
         """Метод подключения к api.hh.ru и получение списка компаний"""
         company_list = []
         for company in list_company:
             self.__url = "https://api.hh.ru/employers"
-            self.__params = {"text": company,
-                                 "area": 113,
-                                 "only_with_vacancies": True,
-                                 "period": 1,
-                                 "per_page": 10}
+            self.__params = {"text": company, "area": 113, "only_with_vacancies": True, "period": 1, "per_page": 10}
             response = requests.get(self.__url, self.__params)
             if response.status_code == 200:
                 result = response.json()

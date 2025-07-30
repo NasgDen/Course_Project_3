@@ -1,5 +1,6 @@
-import psycopg2
 from configparser import ConfigParser
+
+import psycopg2
 
 from src.base_database import BaseDatabase
 
@@ -44,14 +45,17 @@ class DataBase(BaseDatabase):
         conn = psycopg2.connect(dbname=database_name, **params)
         conn.autocommit = True
         with conn.cursor() as cur:
-            cur.execute(f"""
+            cur.execute(
+                """
                 CREATE TABLE company(
                     company_id SERIAL PRIMARY KEY,
                     name VARCHAR(250),
                     address VARCHAR(250)
                 )
-            """)
-            cur.execute(f"""
+            """
+            )
+            cur.execute(
+                """
                 CREATE TABLE vacancies (
                     vacancy_id SERIAL PRIMARY KEY,
                     name VARCHAR(250),
@@ -59,6 +63,7 @@ class DataBase(BaseDatabase):
                     salary_to INTEGER,
                     company_id INTEGER REFERENCES company (company_id)
                 )
-            """)
+            """
+            )
         conn.commit()
         conn.close()
