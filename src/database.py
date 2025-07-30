@@ -71,18 +71,23 @@ class DataBase(BaseDatabase):
 
     @staticmethod
     def insert_companies(database_name: str, params: dict, companies: list) -> None:
-        """ Метод заполняет таблице company значениями полученными из api.hh.ru """
+        """Метод заполняет таблице company значениями полученными из api.hh.ru"""
         conn = psycopg2.connect(dbname=database_name, **params)
         conn.autocommit = True
         for company in companies:
             with conn.cursor() as cur:
                 cur.execute(
-                    """INSERT INTO company(company_id, name, url, vacancies_url) VALUES (%s, %s, %s, %s)""",
-                    (company["id"], company["name"], company["alternate_url"], company["vacancies_url"])
+                    "INSERT INTO company(company_id, name, url, vacancies_url) VALUES (%s, %s, %s, %s)",
+                    (company["id"], company["name"], company["alternate_url"], company["vacancies_url"]),
                 )
         conn.commit()
         conn.close()
 
     @staticmethod
-    def get_company_id(database_name: str, params: dict):
-        pass
+    def get_company_id(database_name: str, params: dict) -> list:
+        """Метод сохраняет параметр company_id в кортеж"""
+        conn = psycopg2.connect(dbname=database_name, **params)
+        with conn.cursor() as cur:
+            cur.execute("SELECT company_id, vacancies_url FROM company")
+            company_id = cur.fetchall()
+        return company_id

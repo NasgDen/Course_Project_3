@@ -42,3 +42,43 @@ class HeadHunterAPI(BaseApiClass):
                     company_dict["vacancies_url"] = company_descript["vacancies_url"]
                     company_list.append(company_dict)
         return company_list
+
+    def get_vacancies_api(self, companies_id):
+        """Метод получает вакансии по id компании с api.hh.ru"""
+        vacancies = []
+        for url_vacancy in companies_id:
+            self.__url = url_vacancy[1]
+            response = requests.get(self.__url)
+            if response.status_code == 200:
+                result = response.json()
+            else:
+                result = {}
+            if result:
+                for vacancy in result["items"]:
+                    vacancy_dict = {}
+                    vacancy_dict["vacancy_id"] = vacancy["id"]
+                    vacancy_dict["name"] = vacancy["name"]
+                    if vacancy["salary"] is not None:
+                        vacancy_dict["salary_from"] = vacancy["salary"]["from"]
+                        vacancy_dict["salary_to"] = vacancy["salary"]["to"]
+                    else:
+                        vacancy_dict["salary_from"] = None
+                        vacancy_dict["salary_to"] = None
+                    if vacancy["address"] is not None:
+                        vacancy_dict["city"] = vacancy["address"]["city"]
+                        vacancy_dict["street"] = vacancy["address"]["street"]
+                        vacancy_dict["building"] = vacancy["address"]["building"]
+                    else:
+                        vacancy_dict["city"] = None
+                        vacancy_dict["street"] = None
+                        vacancy_dict["building"] = None
+                    vacancy_dict["url"] = vacancy["alternate_url"]
+                    vacancy_dict["company_id"] = vacancy["employer"]["id"]
+                    if vacancy["snippet"] is not None:
+                        vacancy_dict["requirement"] = vacancy["snippet"]["requirement"]
+                        vacancy_dict["responsibility"] = vacancy["snippet"]["responsibility"]
+                    else:
+                        vacancy_dict["requirement"] = None
+                        vacancy_dict["responsibility"] = None
+                    vacancies.append(vacancy_dict)
+            return vacancies
