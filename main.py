@@ -1,4 +1,5 @@
 from src.database import DataBase
+from src.db_manager import DBManager
 from src.head_hunter_api import HeadHunterAPI
 
 
@@ -16,6 +17,13 @@ def main():
     companies_id = database.get_company_id("headhunter", param_database)
     vacancies = hh_api.get_vacancies_api(companies_id)
     database.insert_vacancies("headhunter", param_database, vacancies)
+    db_manager = DBManager()
+
+    company_vacancy_count = db_manager.get_companies_and_vacancies_count("headhunter", param_database)
+
+    print("Компания - количество вакансий")
+    for company in company_vacancy_count:
+        print(f"{company[0]} - {company[1]} шт.")
 
 
 if __name__ == "__main__":
