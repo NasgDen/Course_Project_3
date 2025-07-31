@@ -20,10 +20,14 @@ def main():
     db_manager = DBManager()
 
     company_vacancy_count = db_manager.get_companies_and_vacancies_count("headhunter", param_database)
-
     print("Компания - количество вакансий")
     for company in company_vacancy_count:
         print(f"{company[0]} - {company[1]} шт.")
+
+    company_vacancy = db_manager.get_all_vacancies("headhunter", param_database)
+    print("Компания - количество вакансий")
+    for company in company_vacancy:
+        print(f"{company[0]} - {company[1]}. Зарплата: {company[2]} - {company[3]}. Ссылка на вакансию: {company[4]}")
 
 
 if __name__ == "__main__":
