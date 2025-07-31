@@ -35,7 +35,7 @@ class DBManager:
         conn.close()
         return company_vacancy
 
-    def get_avg_salary(self, database_name: str, params: dict):
+    def get_avg_salary(self, database_name: str, params: dict) -> float:
         """ Метод получает среднюю зарплату по вакансиям. """
         conn = psycopg2.connect(dbname=database_name, **params)
         conn.autocommit = True
@@ -45,3 +45,16 @@ class DBManager:
         conn.commit()
         conn.close()
         return round(avg_salary[0], 2)
+
+    def get_vacancies_with_higher_salary(self, database_name: str, params: dict, avg_salary: float):
+        """ Метод получает список всех вакансий, у которых зарплата выше средней по всем вакансиям. """
+        conn = psycopg2.connect(dbname=database_name, **params)
+        conn.autocommit = True
+        with conn.cursor() as cur:
+            cur.execute(f"""SELECT company.name, vacancies.name, salary_from, vacancies.url FROM vacancies
+                   JOIN company USING(company_id)
+                   WHERE salary_from > {avg_salary}""")
+            vacancy_avg_salary = cur.fetchall()
+        conn.commit()
+        conn.close()
+        return vacancy_avg_salary

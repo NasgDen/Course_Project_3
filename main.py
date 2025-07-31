@@ -32,5 +32,11 @@ def main():
     avg_salary = db_manager.get_avg_salary("headhunter", param_database)
     print(f"Средняя зарплата по вакансиям {avg_salary} руб.")
 
+    vacancy_avg_salary = db_manager.get_vacancies_with_higher_salary("headhunter", param_database, avg_salary)
+    print("Вакансии у которых зарплата больше средней")
+    for vacancy in vacancy_avg_salary:
+        print(f"{vacancy[0]} - {vacancy[1]}. Зарплата: {vacancy[2]}. Ссылка на вакансию: {vacancy[3]}")
+
+
 if __name__ == "__main__":
     main()
