@@ -21,7 +21,7 @@ class DBManager:
         return company_vacancy_count
 
     def get_all_vacancies(self, database_name: str, params: dict) -> list:
-        """ Метод получает список всех вакансий с указанием названия компании,
+        """Метод получает список всех вакансий с указанием названия компании,
         названия вакансии и зарплаты и ссылки на вакансию."""
         conn = psycopg2.connect(dbname=database_name, **params)
         conn.autocommit = True
@@ -36,7 +36,7 @@ class DBManager:
         return company_vacancy
 
     def get_avg_salary(self, database_name: str, params: dict) -> float:
-        """ Метод получает среднюю зарплату по вакансиям. """
+        """Метод получает среднюю зарплату по вакансиям."""
         conn = psycopg2.connect(dbname=database_name, **params)
         conn.autocommit = True
         with conn.cursor() as cur:
@@ -47,13 +47,15 @@ class DBManager:
         return round(avg_salary[0], 2)
 
     def get_vacancies_with_higher_salary(self, database_name: str, params: dict, avg_salary: float):
-        """ Метод получает список всех вакансий, у которых зарплата выше средней по всем вакансиям. """
+        """Метод получает список всех вакансий, у которых зарплата выше средней по всем вакансиям."""
         conn = psycopg2.connect(dbname=database_name, **params)
         conn.autocommit = True
         with conn.cursor() as cur:
-            cur.execute(f"""SELECT company.name, vacancies.name, salary_from, vacancies.url FROM vacancies
+            cur.execute(
+                f"""SELECT company.name, vacancies.name, salary_from, vacancies.url FROM vacancies
                    JOIN company USING(company_id)
-                   WHERE salary_from > {avg_salary}""")
+                   WHERE salary_from > {avg_salary}"""
+            )
             vacancy_avg_salary = cur.fetchall()
         conn.commit()
         conn.close()
