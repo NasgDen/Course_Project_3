@@ -55,7 +55,7 @@ class DbManager(BaseDatabase):
 
     def insert_companies(self, companies: list) -> None:
         """Метод заполняет таблице company значениями полученными из api.hh.ru"""
-        self.conn.autocommit = True
+        # self.conn.autocommit = True
         with self.conn.cursor() as cur:
             for company in companies:
                 cur.execute(
@@ -66,7 +66,6 @@ class DbManager(BaseDatabase):
 
     def insert_vacancies(self, vacancies: list) -> None:
         """Метод заполняет таблице vacancy значениями полученными из api.hh.ru"""
-        self.conn.autocommit = True
         with self.conn.cursor() as cur:
             for vacancy in vacancies:
                 cur.execute(
@@ -103,7 +102,6 @@ class DbManager(BaseDatabase):
 
     def get_company_id(self) -> list:
         """Метод сохраняет значения параметров company_id и vacancies_url в кортеж"""
-        self.conn.autocommit = True
         with self.conn.cursor() as cur:
             cur.execute("SELECT company_id, vacancies_url FROM company")
             company_id = cur.fetchall()
@@ -111,7 +109,6 @@ class DbManager(BaseDatabase):
 
     def get_companies_and_vacancies_count(self) -> list:
         """Метод получает список всех компаний и количество вакансий у каждой компании."""
-        self.conn.autocommit = True
         with self.conn.cursor() as cur:
             cur.execute(
                 """SELECT company.name, COUNT(*) AS count_vacancy FROM vacancies
@@ -123,7 +120,6 @@ class DbManager(BaseDatabase):
     def get_all_vacancies(self) -> list:
         """Метод получает список всех вакансий с указанием названия компании,
         названия вакансии и зарплаты и ссылки на вакансию."""
-        self.conn.autocommit = True
         with self.conn.cursor() as cur:
             cur.execute(
                 """SELECT company.name, vacancies.name, salary_from, salary_to, vacancies.url FROM vacancies
@@ -134,7 +130,6 @@ class DbManager(BaseDatabase):
 
     def get_avg_salary(self) -> float:
         """Метод получает среднюю зарплату по вакансиям."""
-        self.conn.autocommit = True
         with self.conn.cursor() as cur:
             cur.execute("SELECT AVG(salary_from) FROM vacancies")
             avg_salary = cur.fetchone()
@@ -142,7 +137,6 @@ class DbManager(BaseDatabase):
 
     def get_vacancies_with_higher_salary(self, avg_salary: float):
         """Метод получает список всех вакансий, у которых зарплата выше средней по всем вакансиям."""
-        self.conn.autocommit = True
         with self.conn.cursor() as cur:
             cur.execute(
                 f"""SELECT company.name, vacancies.name, salary_from, vacancies.url FROM vacancies
@@ -155,7 +149,6 @@ class DbManager(BaseDatabase):
     def get_vacancies_with_keyword(self, keywords: list[str]) -> list:
         """Метод получает список всех вакансий, в названии которых содержатся переданные в метод слова"""
         vacancies_with_keyword = []
-        self.conn.autocommit = True
         with self.conn.cursor() as cur:
             for keyword in keywords:
                 cur.execute(
